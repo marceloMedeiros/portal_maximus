@@ -10,7 +10,7 @@
 	<title>Portal Maximus</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="stylesheet" href="assets/css/main.css" />
+	<link rel="stylesheet" href="../assets/css/main.css" />
 </head>
 
 <body>
@@ -20,7 +20,7 @@
 		<h1><strong><a href="index.html">Spatial</a></strong> by Templated</h1>
 		<nav id="nav">
 			<ul>
-				<li><a href="index.html">Início</a></li>
+				<li><a href="../index.html">Início</a></li>
 				<li><a href="usuarios.html">Usuários</a></li>
 				<li><a href="materias.html">Materias</a></li>
 				<li><a href="notas.html">Notas</a></li>
@@ -52,7 +52,7 @@
 
         <?php
             // Conexão com o banco de dados
-            require "portal/conecta_db.php";
+            require "conecta_db.php";
 
             // Inicia sessões
             session_start();
@@ -99,7 +99,7 @@
 		                    $_SESSION["ind_aluno"]= $dados["ind_aluno"];
 		                    $_SESSION["ind_professor"]= $dados["ind_professor"];
 		                    $_SESSION["ind_secretaria"]= $dados["ind_secretaria"];
-		                    header("Location: index.php");
+		                    header("Location: principal.php");
 		                    exit;
 		                }
 		                // Senha inválida
