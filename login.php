@@ -10,7 +10,7 @@
 	<title>Portal Maximus</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="stylesheet" href="../assets/css/main.css" />
+	<link rel="stylesheet" href="assets/css/main.css" />
 </head>
 
 <body>
@@ -20,10 +20,7 @@
 		<h1><strong><a href="index.html">Spatial</a></strong> by Templated</h1>
 		<nav id="nav">
 			<ul>
-				<li><a href="../index.html">Início</a></li>
-				<li><a href="usuarios.html">Usuários</a></li>
-				<li><a href="materias.html">Materias</a></li>
-				<li><a href="notas.html">Notas</a></li>
+				<li><a href="index.html">Início</a></li>
 				<li><a href="ajuda.html">Ajuda</a></li>
 			</ul>
 		</nav>
@@ -42,7 +39,7 @@
 				<h2>Área Segura</h2>
 				<p>Faça a autenticação para obter acesso ao portal</p>
 				<br>
-				<form method="post">
+				<form method="post" accept-charset="utf-8">
 					<p>Login:</p><input type="text" name="login" style="width:250px; margin:auto;">
 					<p>Senha:</p> <input type="password" name="senha" style="width:250px; margin:auto;"><br>
 					<p><input type="submit" value="Acessar" style="width:130px;"></p>
@@ -52,10 +49,18 @@
 
         <?php
             // Conexão com o banco de dados
-            require "conecta_db.php";
+            require "portal/conecta_db.php";
 
             // Inicia sessões
-            session_start();
+
+						/**
+						* Verifica se o usuário já está logado
+						*/
+					 if (isset($_SESSION['id_usuario']))
+					 {
+						 header("Location: principal.php");
+						 exit;
+					 }
 
 						// Só entra aqui se for um postback
 						if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -66,7 +71,7 @@
 		            // Atribui a uma variável a senha digitado pelo usuário a, criptografando em MD5
 		            $senha = isset($_POST["senha"]) ? md5(trim($_POST["senha"])) : FALSE;
 
-								// echo $senha;
+								// echo $senha . "<br>";
 
 		            // Usuário não forneceu a senha ou o login
 		            if(!$login || !$senha)
@@ -74,6 +79,7 @@
 		                echo "Você deve digitar sua senha e login!";
 		                exit;
 		            }
+
 
 		            /**
 		            * Executa a consulta no banco de dados.
@@ -94,12 +100,13 @@
 		                if(!strcmp($senha, $dados["senha"]))
 		                {
 		                    // TUDO OK! Agora, passa os dados para a sessão e redireciona o usuário
-		                    $_SESSION["id_usuario"]= $dados["id_usuarios"];
-		                    $_SESSION["nome_usuario"] = stripslashes($dados["nome"]);
-		                    $_SESSION["ind_aluno"]= $dados["ind_aluno"];
-		                    $_SESSION["ind_professor"]= $dados["ind_professor"];
-		                    $_SESSION["ind_secretaria"]= $dados["ind_secretaria"];
+		                    $_SESSION["id_usuario"] = $dados["id_usuarios"];
+		                    $_SESSION["nome_usuario"] =  stripslashes(utf8_decode($dados["nome"]));
+		                    $_SESSION["ind_aluno"] =$dados["ind_Aluno"];
+		                    $_SESSION["ind_professor"] = $dados["ind_Professor"];
+		                    $_SESSION["ind_secretaria"] = $dados["ind_Secretaria"];
 		                    header("Location: principal.php");
+												//echo print_r($dados);
 		                    exit;
 		                }
 		                // Senha inválida
