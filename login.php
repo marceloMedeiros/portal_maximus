@@ -65,12 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      * caso 0, inválido.
      */
     $SQL = "SELECT id_usuarios , login , senha , nome , ra , ind_Aluno , ind_Professor , ind_Secretaria FROM usuarios WHERE login = '" . $login . "'";
-    $result_id = @mysql_query($SQL) or die("Erro no banco de dados!");
-    $total = @mysql_num_rows($result_id);
+    $result_id = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
+    $total = @mysqli_num_rows($result_id);
     // Caso o usuário tenha digitado um login válido o número de linhas será 1..
     if ($total) {
         // Obtém os dados do usuário, para poder verificar a senha e passar os demais dados para a sessão
-        $dados = @mysql_fetch_array($result_id);
+        $dados = @mysqli_fetch_array($result_id);
         // Agora verifica a senha
         if (!strcmp($senha, $dados["senha"])) {
             // TUDO OK! Agora, passa os dados para a sessão e redireciona o usuário

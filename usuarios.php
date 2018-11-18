@@ -44,8 +44,8 @@ require "portal/menu.php";
 <?php
 $SQL = "SELECT login , nome , ra , ind_Aluno , ind_Professor , ind_Secretaria FROM usuarios
         order by nome ";
-$result = @mysql_query($SQL) or die("Erro no banco de dados!");
-while ($row = mysql_fetch_array($result)) {
+$result = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
+while ($row = mysqli_fetch_array($result)) {
   echo "<tr>";
   echo "<td>" . "<a href=\"usuarios_manutencao.php?l=" . $row['login'] . "\">" .
   $row['login'] . "</a></td>";

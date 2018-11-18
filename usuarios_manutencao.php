@@ -32,11 +32,11 @@ require "portal/menu.php";
   <?php
   if (!empty($_GET)) {
     $SQL = "SELECT id_usuarios , login , senha , nome , ra , ind_Aluno , ind_Professor , ind_Secretaria FROM usuarios WHERE login = '" . $_GET['l'] . "'";
-    $result_id = @mysql_query($SQL) or die("Erro no banco de dados!");
-    $total = @mysql_num_rows($result_id);
+    $result_id = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
+    $total = @mysqli_num_rows($result_id);
     // Caso o usuário tenha digitado um login válido o número de linhas será 1..
     if ($total) {
-      $dados = @mysql_fetch_array($result_id);
+      $dados = @mysqli_fetch_array($result_id);
 
       $login = $dados["login"];
       $nome = $dados["nome"];
@@ -139,10 +139,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
   if (isset($_POST['Incluir'])) {
-    mysql_query("INSERT INTO usuarios (login, nome, senha, ind_Secretaria, ind_Aluno, ind_Professor, RA)" .
+    mysqli_query($conn, "INSERT INTO usuarios (login, nome, senha, ind_Secretaria, ind_Aluno, ind_Professor, RA)" .
                 " VALUES ('". $login . "', '" . $nome . "', '" . $senha . "', '" . $ind_Secretaria . "', '" . $ind_Aluno . "', '" . $ind_Professor . "', '" . $RA . "') ");
   } elseif (isset($_POST['Alterar'])) {
-    mysql_query("update usuarios set nome  = '" .  $nome . "'," .
+    mysqli_query($conn, "update usuarios set nome  = '" .  $nome . "'," .
                 "                    senha  = '" .  $senha . "'," .
                 "                    ind_Secretaria  = '" .  $ind_Secretaria . "'," .
                 "                    ind_Aluno  = '" .  $ind_Aluno . "'," .
@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 "                    ra  = '" .  $RA . "' " .
                 " where login = '". $login . "'");
   } elseif (isset($_POST['Excluir'])) {
-    mysql_query("delete from usuarios where login = '". $login . "'");
+    mysqli_query($conn, "delete from usuarios where login = '". $login . "'");
   }
 
   header('location:usuarios.php');
