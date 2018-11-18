@@ -24,38 +24,32 @@ require "portal/menu.php";
       <section id="main" class="wrapper">
         <div class="container">
           <header class="major special">
-            <h2>Cadastro de Usuários</h2>
-            <p>Consulta a usuários cadastrados.</p>
+            <h2>Cadastro de Matérias</h2>
+            <p>Consulta a matérias cadastradas.</p>
           </header>
           <!-- Table -->
             <section>
-              <h3>Usuários cadastrados</h3>
+              <h3>Matérias cadastrados</h3>
               <div class="table-wrapper">
                 <table>
                   <thead>
                     <tr>
-                      <th>Nome Completo</th>
-                      <th>Login</th>
-                      <th>Acesso</th>
+                      <th>Descrição</th>
+                      <th>Matéria</th>
+                      <th>Professor</th>
                     </tr>
                   </thead>
                   <tbody>
 <?php
-$SQL = "SELECT login , nome , ra , ind_Aluno , ind_Professor , ind_Secretaria FROM usuarios
-        order by nome ";
+$SQL = "SELECT materia , descricao , u.nome as professor FROM materias m
+        inner join usuarios u on m.usuarios_id_usuarios = u.id_usuarios order by materia ";
 $result = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
 while ($row = mysqli_fetch_array($result)) {
   echo "<tr>";
-  echo "<td>" . $row['nome'] . "</td>";
-  echo "<td>" . "<a href=\"usuarios_manutencao.php?l=" . $row['login'] . "\">" .
-  $row['login'] . "</a></td>";
-  if ($row['ind_Aluno'] === 'S'){
-    echo "<td>Aluno</td>";
-  } elseif ($row['ind_Professor'] === 'S'){
-    echo "<td>Professor</td>";
-  } elseif ($row['ind_Secretaria'] === 'S'){
-    echo "<td>Secretaria</td>";
-  }
+  echo "<td>" . $row['descricao'] . "</td>";
+  echo "<td>" . "<a href=\"materias_manutencao.php?m=" . $row['materia'] . "\">" .
+  $row['materia'] . "</a></td>";
+  echo "<td>" . $row['professor'] . "</td>";
   echo "</tr>";
 }
 ?>
@@ -66,7 +60,7 @@ while ($row = mysqli_fetch_array($result)) {
             <!-- Buttons -->
             <section>
               <ul class="actions">
-                  <li><a href="usuarios_manutencao.php" class="button special">Novo usuário</a></li>
+                  <li><a href="materias_manutencao.php" class="button special">Nova Matéria</a></li>
               </ul>
             </section>
         </div>

@@ -26,7 +26,7 @@ require "portal/menu.php";
         <div class="container">
           <header class="major special">
             <h2>Cadastro de Usuários</h2>
-            <p>informe os dados do usuário.</p>
+            <p>Informe os dados do usuário.</p>
           </header>
 
   <?php
@@ -53,6 +53,7 @@ require "portal/menu.php";
       $ind_Aluno = "";
       $ind_Professor = "";
       $RA = "";
+      header('location:usuarios_manutencao.php');
     }
   } else {
     $login = "";
@@ -64,12 +65,6 @@ require "portal/menu.php";
     $RA = "";
   }
 ?>
-
-
-
-<!-- Then in house.php, you would get the house id
-using $_GET['id'], validate it using is_numeric() and then display its info. -->
-
           <!-- Form -->
             <section>
               <h3>Cadastrar novo usuário</h3>
@@ -115,6 +110,7 @@ using $_GET['id'], validate it using is_numeric() and then display its info. -->
                       } else {
                         echo "<li><input type=\"submit\" value=\"Incluir\" name=\"Incluir\" class=\"special\" /></li>";
                       }
+                      echo "<li><input type=\"submit\" value=\"Voltar\" name=\"Voltar\" class=\"special\" /></li>";
                       ?>
                       <!-- <li><input type="reset" value="Limpar" /></li> -->
                     </ul>
@@ -128,6 +124,11 @@ using $_GET['id'], validate it using is_numeric() and then display its info. -->
 <?php
 // Só entra aqui se for um postback
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  if (isset($_POST['Voltar'])) {
+    header('location:usuarios.php');
+  }
+
+
 
   $login = isset($_POST["login"]) ? addslashes(trim($_POST["login"])) : FALSE;
   $nome = isset($_POST["nome"]) ? addslashes(trim($_POST["nome"])) : FALSE;
