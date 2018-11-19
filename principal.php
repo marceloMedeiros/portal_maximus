@@ -23,7 +23,7 @@ require "portal/menu.php";
         <div class="container">
           <header class="major special">
             <h2>Área Segura</h2>
-            <p>Selecione a funcinalidade desejada no menu.</p>
+            <p>Selecione a funcionalidade desejada no menu.</p>
           </header>
           <a href="#" class="image fit"><img src="assets/maximus/bg_maximus3_half.gif" alt="" /></a>
           <!-- <p></p> -->
