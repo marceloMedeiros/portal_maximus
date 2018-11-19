@@ -39,7 +39,7 @@ if((isset ($_SESSION['acesso']) == TRUE)){
                 //echo "<li><a href=\"index.html\">Início </a></li>";
                 echo ($_SESSION["ind_secretaria"] === 'S' ? "<li><a href=\"usuarios.php\">Usuários</a></li>" : "");
                 echo ($_SESSION["ind_secretaria"] === 'S' ? "<li><a href=\"materias.php\">Matérias</a></li>" : "");
-                echo ($_SESSION["ind_secretaria"] === 'S' ? "<li><a href=\"matriculas.php\">Matrícula</a></li>" : "");
+                echo ($_SESSION["ind_secretaria"] === 'S' ? "<li><a href=\"matricula.php\">Matrícula</a></li>" : "");
                 echo (in_array("S", [$_SESSION["ind_aluno"], $_SESSION["ind_professor"]]) ? "<li><a href=\"materias.html\">Materias</a></li>" : "");
                 echo (in_array("S", [$_SESSION["ind_aluno"], $_SESSION["ind_professor"]]) ? "<li><a href=\"notas.html\">Notas</a></li>" : "");
                 ?>

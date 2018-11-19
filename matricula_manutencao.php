@@ -25,13 +25,18 @@ require "portal/menu.php";
       <section id="main" class="wrapper">
         <div class="container">
           <header class="major special">
-            <h2>Cadastro de Matérias</h2>
-            <p>Informe os dados da matéria.</p>
+            <h2>Matrícula de Aluno</h2>
+            <p>Informe os dados da matrícula.</p>
           </header>
 
   <?php
   if (!empty($_GET)) {
-    $SQL = "SELECT materia , descricao , usuarios_id_usuarios FROM materias WHERE materia = '" . $_GET['m'] . "'";
+    $SQL = "SELECT m.id_matriculas, m.materias_id_materias, m.usuarios_id_usuarios, a.materia ,
+            (select max(nome) from usuarios where id_usuarios = a.usuarios_id_usuarios) as professor ,
+            u.nome as aluno FROM matriculas m
+            inner join usuarios u on m.usuarios_id_usuarios = u.id_usuarios
+            inner join materias a on m.materias_id_materias = a.id_materias
+            WHERE m.id_matriculas = '" . $_GET['m'] . "'";
     $result_id = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
     $total = @mysqli_num_rows($result_id);
     // Caso o usuário tenha digitado um login válido o número de linhas será 1..
@@ -39,56 +44,65 @@ require "portal/menu.php";
       $dados = @mysqli_fetch_array($result_id);
 
       $materia = $dados["materia"];
-      $descricao = $dados["descricao"];
-      $usuarios_id_usuarios = $dados["usuarios_id_usuarios"];
+      $aluno = $dados["usuarios_id_usuarios"];
+      $id_matriculas = $dados["id_matriculas"];
     } else {
       $materia = "";
-      $descricao = "";
-      $usuarios_id_usuarios = "";
-      header('location:materias_manutencao.php');
+      $aluno = "";
+      $id_matriculas = "";
+      header('location:matricula_manutencao.php');
     }
   } else {
     $materia = "";
-    $descricao = "";
-    $usuarios_id_usuarios = "";
+    $aluno = "";
+    $id_matriculas = "";
   }
 ?>
           <!-- Form -->
             <section>
-              <h3>Cadastrar nova matéria</h3>
+              <h3>Cadastrar nova matrícula</h3>
               <form method="post" accept-charset="utf-8">
                 <div class="row uniform 50%">
-                  <div class="6u 12u$(xsmall)">
-                    <input type="text" name="materia" id="materia" value="<?php echo $materia; ?>" placeholder="Matéria" />
-                  </div>
-                  <div class="6u$ 12u$(xsmall)">
-                    <input type="text" name="descricao" id="descricao" value="<?php echo $descricao; ?>" placeholder="Descrição da matéria" />
-                  </div>
                   <div class="12u$">
 
                     <div class="select-wrapper">
-                      <select name="professor" id="professor">
-                        <option value="">- Professor -</option>
+                      <select name="aluno" id="aluno">
+                        <option value="">- Aluno -</option>
                         <?php
-                        $SQL = "SELECT id_Usuarios , login , nome FROM usuarios WHERE ind_Professor = 'S' order by nome";
+                        $SQL = "SELECT id_Usuarios , login , nome FROM usuarios WHERE ind_Aluno = 'S' order by nome";
                         $result = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
                         while ($row = mysqli_fetch_array($result)) {
                           echo "<option value=\"" . $row["id_Usuarios"] . "\"" .
-                               (!empty($usuarios_id_usuarios) ? ($usuarios_id_usuarios == $row["id_Usuarios"] ? " selected=\"selected\"" : "") : "") .
+                               (!empty($aluno) ? ($aluno == $row["id_Usuarios"] ? " selected=\"selected\"" : "") : "") .
                                "\">" . $row["nome"] . "</option>";
                         }
                         ?>
                       </select>
                     </div>
                   </div>
+                  <div class="12u$">
 
-
+                    <div class="select-wrapper">
+                      <select name="materia" id="materia">
+                        <option value="">- Materia -</option>
+                        <?php
+                        $SQL = "SELECT id_materias , materia , descricao FROM materias order by materia";
+                        $result = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
+                        while ($row = mysqli_fetch_array($result)) {
+                          echo "<option value=\"" . $row["id_materias"] . "\"" .
+                               (!empty($materia) ? ($materia == $row["materia"] ? " selected=\"selected\"" : "") : "") .
+                               "\">" . $row["materia"] . "</option>";
+                        }
+                        ?>
+                      </select>
+                    </div>
+                  </div>
                   <div class="12u$">
                     <ul class="actions">
                       <?php
                       if (!empty($_GET)) {
                         if ($total) {
-                          echo "<li><input type=\"submit\" value=\"Alterar\" name=\"Alterar\" class=\"special\" /></li>";
+                          //echo "<li><input type=\"submit\" value=\"Alterar\" name=\"Alterar\" class=\"special\" /></li>";
                           echo "<li><input type=\"submit\" value=\"Excluir\" name=\"Excluir\" class=\"special\" /></li>";
                         } else {
                           echo "<li><input type=\"submit\" value=\"Incluir\" name=\"Incluir\" class=\"special\" /></li>";
@@ -111,29 +125,25 @@ require "portal/menu.php";
 // Só entra aqui se for um postback
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['Voltar'])) {
-      header('location:usuarios.php');
+      header('location:matricula.php');
     }
 
-  $materia = isset($_POST["materia"]) ? addslashes(trim($_POST["materia"])) : FALSE;
-  $descricao = isset($_POST["descricao"]) ? addslashes(trim($_POST["descricao"])) : FALSE;
-  $usuarios_id_usuarios = isset($_POST["professor"]) ? trim($_POST["professor"]) : FALSE;
-
+  $materia = isset($_POST["materia"]) ? trim($_POST["materia"]) : FALSE;
+  $aluno = isset($_POST["aluno"]) ? trim($_POST["aluno"]) : FALSE;
 
   if (isset($_POST['Incluir'])) {
-    //echo "INSERT INTO materias (materia, descricao, usuarios_id_usuarios)" .
-    //            " VALUES ('". $materia . "', '" . $descricao . "', '" . $usuarios_id_usuarios . "') ";
-    mysqli_query($conn, "INSERT INTO materias (materia, descricao, usuarios_id_usuarios)" .
-                " VALUES ('". $materia . "', '" . $descricao . "', '" . $usuarios_id_usuarios . "') ");
+    $SQL = "INSERT INTO matriculas (materias_id_materias, usuarios_id_usuarios) VALUES ('"
+           . $materia . "', '" . $aluno . "')";
+
+    mysqli_query($conn, $SQL);
   } elseif (isset($_POST['Alterar'])) {
-    mysqli_query($conn, "update materias set materia  = '" .  $materia . "'," .
-                "                    descricao  = '" .  $descricao . "'," .
-                "                    usuarios_id_usuarios  = '" .  $usuarios_id_usuarios . "' " .
-                " where materia = '". $materia . "'");
+
   } elseif (isset($_POST['Excluir'])) {
-    mysqli_query($conn, "delete from materias where materia = '". $materia . "'");
+    $SQL =  "delete from matriculas where materias_id_materias = '". $materia . "' and usuarios_id_usuarios = '". $aluno . "'";
+    mysqli_query($conn, $SQL);
   }
 
-  header('location:materias.php');
+  header('location:matricula.php');
 }
 ?>
 
