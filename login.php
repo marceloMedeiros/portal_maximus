@@ -18,7 +18,7 @@
 		<nav id="nav">
 			<ul>
 				<li><a href="index.html">Início</a></li>
-				<li><a href="ajuda.html">Ajuda</a></li>
+				<!-- <li><a href="ajuda.html">Ajuda</a></li> -->
 			</ul>
 		</nav>
 	</header>

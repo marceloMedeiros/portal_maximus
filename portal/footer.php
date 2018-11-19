@@ -9,7 +9,7 @@
         <?php
 echo "<small>";
 //  echo "ID do usuário: "   . $_SESSION["id_usuario"]   . "";
-echo " Usuário: " . $_SESSION["nome_usuario"] . " - ";
+echo " Usuário: " . utf8_encode($_SESSION["nome_usuario"]) . " - ";
 echo " Acesso: " . ($_SESSION["ind_aluno"] === 'S' ? "Aluno" : ($_SESSION["ind_professor"] === 'S' ? "Professor" : "Secretaria")) . "";
 echo "</small>";
 ?>

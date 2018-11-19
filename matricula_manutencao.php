@@ -81,7 +81,6 @@ require "portal/menu.php";
                     </div>
                   </div>
                   <div class="12u$">
-
                     <div class="select-wrapper">
                       <select name="materia" id="materia">
                         <option value="">- Materia -</option>
