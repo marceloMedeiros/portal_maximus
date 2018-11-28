@@ -14,7 +14,7 @@ echo " Acesso: " . ($_SESSION["ind_aluno"] === 'S' ? "Aluno" : ($_SESSION["ind_p
 echo "</small>";
 ?>
         <ul class="copyright">
-            <li>&copy; Untitled</li>
+            <li>&copy; Marcelo Medeiros</li>
             <li>Design: <a href="http://templated.co">TEMPLATED</a></li>
             <li>Images: <a href="http://unsplash.com">Unsplash</a></li>
         </ul>

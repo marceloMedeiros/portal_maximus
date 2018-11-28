@@ -24,18 +24,18 @@ require "portal/menu.php";
       <section id="main" class="wrapper">
         <div class="container">
           <header class="major special">
-            <h2>Cadastro de Matérias</h2>
-            <p>Consulta a matérias cadastradas.</p>
+            <h2>Cadastro de Disciplinas</h2>
+            <p>Consulta a disciplinas cadastradas.</p>
           </header>
           <!-- Table -->
             <section>
-              <h3>Matérias cadastrados</h3>
+              <h3>Disciplinas cadastradas</h3>
               <div class="table-wrapper">
                 <table>
                   <thead>
                     <tr>
                       <th>Descrição</th>
-                      <th>Matéria</th>
+                      <th>Disciplina</th>
                       <th>Professor</th>
                     </tr>
                   </thead>
@@ -60,7 +60,7 @@ while ($row = mysqli_fetch_array($result)) {
             <!-- Buttons -->
             <section>
               <ul class="actions">
-                  <li><a href="materias_manutencao.php" class="button special">Nova Matéria</a></li>
+                  <li><a href="materias_manutencao.php" class="button special">Nova Disciplina</a></li>
               </ul>
             </section>
         </div>

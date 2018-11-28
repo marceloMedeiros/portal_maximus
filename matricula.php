@@ -35,7 +35,7 @@ require "portal/menu.php";
                   <thead>
                     <tr>
                       <th>Aluno</th>
-                      <th>Matéria</th>
+                      <th>Disciplina</th>
                       <th>Professor</th>
                       </tr>
                   </thead>

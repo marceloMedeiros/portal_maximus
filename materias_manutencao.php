@@ -25,8 +25,8 @@ require "portal/menu.php";
       <section id="main" class="wrapper">
         <div class="container">
           <header class="major special">
-            <h2>Cadastro de Matérias</h2>
-            <p>Informe os dados da matéria.</p>
+            <h2>Cadastro de Disciplinas</h2>
+            <p>Informe os dados da disciplina.</p>
           </header>
 
   <?php
@@ -55,19 +55,25 @@ require "portal/menu.php";
 ?>
           <!-- Form -->
             <section>
-              <h3>Cadastrar nova matéria</h3>
+              <?php
+              if ($materia != ""){
+                  echo("<h3>Alterar dados da disciplina</h3>");
+              } else {
+                  echo("<h3>Cadastrar nova disciplina</h3>");
+              }
+              ?>
               <form method="post" accept-charset="utf-8">
                 <div class="row uniform 50%">
                   <div class="6u 12u$(xsmall)">
-                    <input type="text" name="materia" id="materia" value="<?php echo $materia; ?>" placeholder="Matéria" />
+                  Nome da disciplina: <input type="text" name="materia" id="materia" value="<?php echo $materia; ?>" placeholder="Nome da disciplina" />
                   </div>
                   <div class="6u$ 12u$(xsmall)">
-                    <input type="text" name="descricao" id="descricao" value="<?php echo $descricao; ?>" placeholder="Descrição da matéria" />
+                  Descrição da disciplina: <input type="text" name="descricao" id="descricao" value="<?php echo $descricao; ?>" placeholder="Descrição da disciplina" />
                   </div>
                   <div class="12u$">
-
                     <div class="select-wrapper">
-                      <select name="professor" id="professor">
+                    Professor responsável:
+                    <select name="professor" id="professor">
                         <option value="">- Professor -</option>
                         <?php
                         $SQL = "SELECT id_Usuarios , login , nome FROM usuarios WHERE ind_Professor = 'S' order by nome";
@@ -81,8 +87,6 @@ require "portal/menu.php";
                       </select>
                     </div>
                   </div>
-
-
                   <div class="12u$">
                     <ul class="actions">
                       <?php
