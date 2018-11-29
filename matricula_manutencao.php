@@ -25,17 +25,18 @@ require "portal/menu.php";
       <section id="main" class="wrapper">
         <div class="container">
           <header class="major special">
-            <h2>Matrícula de Aluno</h2>
-            <p>Informe os dados da matrícula.</p>
+            <h2>Associação de Disciplina</h2>
+            <p>Informe os dados para a matrícula.</p>
           </header>
 
   <?php
   if (!empty($_GET)) {
-    $SQL = "SELECT m.id_matriculas, m.materias_id_materias, m.usuarios_id_usuarios, a.materia ,
+    $SQL = "SELECT m.id_matriculas, m.materias_id_materias, m.usuarios_id_usuarios, a.materia, t.turno,
             (select max(nome) from usuarios where id_usuarios = a.usuarios_id_usuarios) as professor ,
             u.nome as aluno FROM matriculas m
             inner join usuarios u on m.usuarios_id_usuarios = u.id_usuarios
             inner join materias a on m.materias_id_materias = a.id_materias
+            left join turnos t on m.turnos_id_turnos = t.id_turnos
             WHERE m.id_matriculas = '" . $_GET['m'] . "'";
     $result_id = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
     $total = @mysqli_num_rows($result_id);
@@ -44,23 +45,26 @@ require "portal/menu.php";
       $dados = @mysqli_fetch_array($result_id);
 
       $materia = $dados["materia"];
+      $turno =  $dados["turno"];
       $aluno = $dados["usuarios_id_usuarios"];
       $id_matriculas = $dados["id_matriculas"];
     } else {
       $materia = "";
+      $turno = "";
       $aluno = "";
       $id_matriculas = "";
       header('location:matricula_manutencao.php');
     }
   } else {
     $materia = "";
+    $turno = "";
     $aluno = "";
     $id_matriculas = "";
   }
 ?>
           <!-- Form -->
             <section>
-              <h3>Cadastrar nova matrícula</h3>
+              <h3>Associar nova disciplina</h3>
               <form method="post" accept-charset="utf-8">
                 <div class="row uniform 50%">
                   <div class="12u$">
@@ -83,7 +87,7 @@ require "portal/menu.php";
                   <div class="12u$">
                     <div class="select-wrapper">
                       <select name="materia" id="materia">
-                        <option value="">- Materia -</option>
+                        <option value="">- Disciplina -</option>
                         <?php
                         $SQL = "SELECT id_materias , materia , descricao FROM materias order by materia";
                         $result = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
@@ -91,6 +95,22 @@ require "portal/menu.php";
                           echo "<option value=\"" . $row["id_materias"] . "\"" .
                                (!empty($materia) ? ($materia == $row["materia"] ? " selected=\"selected\"" : "") : "") .
                                "\">" . $row["materia"] . "</option>";
+                        }
+                        ?>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="12u$">
+                    <div class="select-wrapper">
+                      <select name="turno" id="turno">
+                        <option value="">- Turno -</option>
+                        <?php
+                        $SQL = "SELECT id_turnos , turno , descricao FROM turnos order by turno";
+                        $result = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
+                        while ($row = mysqli_fetch_array($result)) {
+                          echo "<option value=\"" . $row["id_turnos"] . "\"" .
+                               (!empty($turno) ? ($turno == $row["turno"] ? " selected=\"selected\"" : "") : "") .
+                               "\">" . $row["turno"] . "</option>";
                         }
                         ?>
                       </select>
@@ -129,10 +149,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $materia = isset($_POST["materia"]) ? trim($_POST["materia"]) : FALSE;
   $aluno = isset($_POST["aluno"]) ? trim($_POST["aluno"]) : FALSE;
+  $turno = isset($_POST["turno"]) ? trim($_POST["turno"]) : FALSE;
 
   if (isset($_POST['Incluir'])) {
-    $SQL = "INSERT INTO matriculas (materias_id_materias, usuarios_id_usuarios) VALUES ('"
-           . $materia . "', '" . $aluno . "')";
+    $SQL = "INSERT INTO matriculas (materias_id_materias, usuarios_id_usuarios, turnos_id_turnos) VALUES ('"
+           . $materia . "', '" . $aluno . "', '" . $turno. "')";
 
     mysqli_query($conn, $SQL);
   } elseif (isset($_POST['Alterar'])) {

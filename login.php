@@ -14,7 +14,7 @@
 <body>
 	<!-- Header -->
 	<header id="header">
-		<h1><strong><a href="index.html">Spatial</a></strong> by Templated</h1>
+		<!-- <h1><strong><a href="index.html">Spatial</a></strong> by Templated</h1> -->
 		<nav id="nav">
 			<ul>
 				<li><a href="index.html">Início</a></li>
@@ -102,15 +102,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	<!-- Footer -->
 	<footer id="footer">
 		<div class="container">
-			<ul class="icons">
+			<!-- <ul class="icons">
 				<li><a href="#" class="icon fa-facebook"></a></li>
 				<li><a href="#" class="icon fa-twitter"></a></li>
 				<li><a href="#" class="icon fa-instagram"></a></li>
-			</ul>
+			</ul> -->
 			<ul class="copyright">
-				<li>&copy; Untitled</li>
-				<li>Design: <a href="http://templated.co">TEMPLATED</a></li>
-				<li>Images: <a href="http://unsplash.com">Unsplash</a></li>
+          <li>&copy; Marcelo Medeiros & João Hallwas</li>
+				<!-- <li>Design: <a href="http://templated.co">TEMPLATED</a></li>
+				<li>Images: <a href="http://unsplash.com">Unsplash</a></li> -->
 			</ul>
 		</div>
 	</footer>

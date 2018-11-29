@@ -24,8 +24,15 @@ require "portal/menu.php";
       <section id="main" class="wrapper">
         <div class="container">
           <header class="major special">
-            <h2>Matrícula de Alunos</h2>
-            <p>Consulta a matrículas realizadas.</p>
+<?php
+  if (in_array("ind_aluno", $_SESSION["acesso"])){
+    echo "<h2>Frequência e Notas</h2>
+          <p>Consulta a frequência e notas.</p>";
+  } elseif (in_array("ind_professor", $_SESSION["acesso"])){
+    echo "<h2>Frequência e Notas de Alunos</h2>
+          <p>Consulta a frequência e notas.</p>";
+  }
+?>
           </header>
           <!-- Table -->
             <section>
@@ -81,7 +88,7 @@ while ($row = mysqli_fetch_array($result)) {
               </div>
             </section>
             <!-- Buttons -->
-      
+
         </div>
       </section>
     <?php
