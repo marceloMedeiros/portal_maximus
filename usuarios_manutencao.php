@@ -111,10 +111,20 @@ require "portal/menu.php";
                     if (strlen($senha_ori) < 5){
                       echo "<div style=\"text-align:center; color:red;\">Senha deve ter ao menos 5 caracteres!</div><br/>";
                     } else {
-                      mysqli_query($conn, "INSERT INTO usuarios (login, nome, senha, ind_Secretaria, ind_Aluno, ind_Professor, RA)" .
-                              " VALUES ('". $login . "', '" . $nome . "', '" . $senha . "', '" . $ind_Secretaria . "', '" . $ind_Aluno . "', '" . $ind_Professor . "', '" . $RA . "') ");
-                      header('location:usuarios.php');
-                      exit();
+                      // primeiro testa se não existe um registro já com essa chave
+                      $SQL = " select nome from usuarios
+                               where login = '" . $login . "' ";
+                      $result_id = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
+                      $total = @mysqli_num_rows($result_id);
+                      // Caso o usuário tenha digitado um login válido o número de linhas será 1..
+                      if ($total > 0) {
+                          echo "<div style=\"text-align:center; color:red;\">Este nome de usuário (login) já está em uso!</div><br/>";
+                      } else {
+                        mysqli_query($conn, "INSERT INTO usuarios (login, nome, senha, ind_Secretaria, ind_Aluno, ind_Professor, RA)" .
+                                " VALUES ('". $login . "', '" . $nome . "', '" . $senha . "', '" . $ind_Secretaria . "', '" . $ind_Aluno . "', '" . $ind_Professor . "', '" . $RA . "') ");
+                        header('location:usuarios.php');
+                        exit();
+                      }
                     }
                   } elseif (isset($_POST['Alterar'])) {
                     mysqli_query($conn, "update usuarios set nome  = '" .  $nome . "'," .

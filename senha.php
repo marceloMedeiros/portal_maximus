@@ -133,7 +133,6 @@
                     }
                 }
                 ?>
-
               <form method="post" accept-charset="utf-8">
                 <div class="row uniform 50%">
                   <div class="6u 12u$(xsmall)" <?php  if (empty($_GET)) echo " hidden=\"true\""; ?>>
