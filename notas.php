@@ -41,9 +41,14 @@ require "portal/menu.php";
                 <table>
                   <thead>
                     <tr>
-                      <th>Aluno</th>
-                      <th>Professor</th>
+<?php
+  if ($_SESSION["ind_professor"] == 'S'){
+    echo "<th>Aluno</th>";
+  }
+?>
                       <th>Matéria</th>
+                      <th>Turno</th>
+                      <th>Professor</th>
                       <th>Nota</th>
                       <th>Presenças</th>
                       <th>Faltas</th>
@@ -54,11 +59,12 @@ require "portal/menu.php";
                   </thead>
                   <tbody>
 <?php
-$SQL = "SELECT a.materia , (select max(nome) from usuarios where id_usuarios = a.usuarios_id_usuarios) as professor ,
+$SQL = "SELECT concat(a.materia,' - ',a.descricao) as materia , (select max(nome) from usuarios where id_usuarios = a.usuarios_id_usuarios) as professor ,
         u.nome as aluno, m.nota, m.presencas, m.faltas, m.ind_ativo, m.ind_revisao, m.ind_revisado,
-        m.ind_aprovacao, m.ind_reprovacao, m.id_matriculas  FROM matriculas m
+        m.ind_aprovacao, m.ind_reprovacao, m.id_matriculas, t.turno  FROM matriculas m
         inner join usuarios u on m.usuarios_id_usuarios = u.id_usuarios
-        inner join materias a on m.materias_id_materias = a.id_materias" .
+        inner join materias a on m.materias_id_materias = a.id_materias
+        left join turnos t on m.turnos_id_turnos = t.id_turnos" .
         ($_SESSION["ind_aluno"] == 'S' ? " where m.usuarios_id_usuarios ='" . $_SESSION["id_usuario"] . "' " : "") .
         ($_SESSION["ind_professor"] == 'S' ? " where a.usuarios_id_usuarios ='" . $_SESSION["id_usuario"] . "' " : "") .
         "order by materia ";
@@ -70,10 +76,11 @@ while ($row = mysqli_fetch_array($result)) {
     echo "<td>" . "<a href=\"notas_manutencao.php?m=" . $row['id_matriculas'] . "\">" .
     $row['aluno'] . "</a></td>";
   } else {
-    echo "<td>" . $row['aluno'] . "</td>";
+    //echo "<td>" . $row['aluno'] . "</td>";
   }
-  echo "<td>" . $row['professor'] . "</td>";
   echo "<td>" . $row['materia'] . "</td>";
+  echo "<td>" . $row['turno'] . "</td>";
+  echo "<td>" . $row['professor'] . "</td>";
   echo "<td>" . $row['nota'] . "</td>";
   echo "<td>" . $row['presencas'] . "</td>";
   echo "<td>" . $row['faltas'] . "</td>";

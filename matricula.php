@@ -29,7 +29,7 @@ require "portal/menu.php";
           </header>
           <!-- Table -->
             <section>
-              <h3>Matrículas cadastradas</h3>
+              <h3>Matrículas realizadas</h3>
               <div class="table-wrapper">
                 <table>
                   <thead>

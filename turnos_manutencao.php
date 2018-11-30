@@ -29,6 +29,41 @@
             <p>Informe os dados do turno.</p>
           </header>
 
+          <?php
+          // Só entra aqui se for um postback
+          if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+              if (isset($_POST['Voltar'])) {
+                  header('location:turnos.php');
+              }
+
+              $turno = isset($_POST["turno"]) ? addslashes(trim($_POST["turno"])) : false;
+              $descricao = isset($_POST["descricao"]) ? addslashes(trim($_POST["descricao"])) : false;
+              $id_turnos = isset($_POST["id_turnos"]) ? trim($_POST["id_turnos"]) : false;
+
+              if ($turno == "" || $descricao == "") {
+                echo "<div style=\"text-align:center; color:red;\">É necessário informar todos os dados para incluir/alterar o registro!</div>";
+              } else {
+                  if (isset($_POST['Incluir'])) {
+                      $SQL = "INSERT INTO turnos (turno, descricao)" .
+                          " VALUES ('". $turno . "', '" . $descricao . "') ";
+                      mysqli_query($conn, $SQL);
+                  } elseif (isset($_POST['Alterar'])) {
+                      $SQL = "update turnos set turno  = '" .  $turno . "'," .
+                         "                    descricao  = '" .  $descricao . "' " .
+                         " where id_turnos = '". $id_turnos . "'";
+                      mysqli_query($conn, $SQL);
+                  } elseif (isset($_POST['Excluir'])) {
+                      $SQL = "delete from turnos where id_turnos = '". $id_turnos . "'";
+                      mysqli_query($conn, $SQL);
+                  }
+                  //echo $SQL;
+                  header('location:turnos.php');
+                  exit();
+              }
+          }
+          ?>
+
+
     <?php
     if (!empty($_GET)) {
         $SQL = "SELECT turno, descricao , id_turnos FROM turnos WHERE id_turnos = '" . $_GET['t'] . "'";
@@ -45,6 +80,7 @@
             $descricao = "";
             $id_turnos = "";
             header('location:turnos_manutencao.php');
+            exit();                    
         }
     } else {
         $turno = "";
@@ -95,38 +131,7 @@
         </div>
       </section>
 
-<?php
-// Só entra aqui se for um postback
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['Voltar'])) {
-        header('location:turnos.php');
-    }
 
-    $turno = isset($_POST["turno"]) ? addslashes(trim($_POST["turno"])) : false;
-    $descricao = isset($_POST["descricao"]) ? addslashes(trim($_POST["descricao"])) : false;
-    $id_turnos = isset($_POST["id_turnos"]) ? trim($_POST["id_turnos"]) : false;
-
-    if ($turno == "" || $descricao == "") {
-      echo "<div style=\"text-align:center;\">É necessário informar todos os dados para incluir/alterar o registro!</div>";
-    } else {
-        if (isset($_POST['Incluir'])) {
-            $SQL = "INSERT INTO turnos (turno, descricao)" .
-                " VALUES ('". $turno . "', '" . $descricao . "') ";
-            mysqli_query($conn, $SQL);
-        } elseif (isset($_POST['Alterar'])) {
-            $SQL = "update turnos set turno  = '" .  $turno . "'," .
-               "                    descricao  = '" .  $descricao . "' " .
-               " where id_turnos = '". $id_turnos . "'";
-            mysqli_query($conn, $SQL);
-        } elseif (isset($_POST['Excluir'])) {
-            $SQL = "delete from turnos where id_turnos = '". $id_turnos . "'";
-            mysqli_query($conn, $SQL);
-        }
-        //echo $SQL;
-        header('location:turnos.php');
-    }
-}
-?>
 
 
 

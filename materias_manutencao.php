@@ -31,23 +31,27 @@ require "portal/menu.php";
 
   <?php
   if (!empty($_GET)) {
-    $SQL = "SELECT materia , descricao , usuarios_id_usuarios FROM materias WHERE materia = '" . $_GET['m'] . "'";
+    $SQL = "SELECT id_materias, materia , descricao , usuarios_id_usuarios FROM materias WHERE materia = '" . $_GET['m'] . "'";
     $result_id = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
     $total = @mysqli_num_rows($result_id);
     // Caso o usuário tenha digitado um login válido o número de linhas será 1..
     if ($total) {
       $dados = @mysqli_fetch_array($result_id);
 
+      $id_materias = $dados["id_materias"];
       $materia = $dados["materia"];
       $descricao = $dados["descricao"];
       $usuarios_id_usuarios = $dados["usuarios_id_usuarios"];
     } else {
+      $id_materias = "";
       $materia = "";
       $descricao = "";
       $usuarios_id_usuarios = "";
       header('location:materias_manutencao.php');
+      exit();
     }
   } else {
+    $id_materias = "";
     $materia = "";
     $descricao = "";
     $usuarios_id_usuarios = "";
@@ -62,6 +66,45 @@ require "portal/menu.php";
                   echo("<h3>Cadastrar nova disciplina</h3>");
               }
               ?>
+
+              <?php
+              // Só entra aqui se for um postback
+              if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                if (isset($_POST['Voltar'])) {
+                    header('location:materias.php');
+                }
+
+                $id_materias = isset($_POST["id_materias"]) ? trim($_POST["id_materias"]) : FALSE;
+                $materia = isset($_POST["materia"]) ? addslashes(trim($_POST["materia"])) : FALSE;
+                $descricao = isset($_POST["descricao"]) ? addslashes(trim($_POST["descricao"])) : FALSE;
+                $usuarios_id_usuarios = isset($_POST["professor"]) ? trim($_POST["professor"]) : FALSE;
+
+                if ($materia == "" || $descricao == "" || $usuarios_id_usuarios == ""){
+                  echo "<div style=\"text-align:center; color:red;\">É necessário informar todos os campos!</div><br/>";
+                } else {
+                  if (isset($_POST['Incluir'])) {
+                    //echo "INSERT INTO materias (materia, descricao, usuarios_id_usuarios)" .
+                    //            " VALUES ('". $materia . "', '" . $descricao . "', '" . $usuarios_id_usuarios . "') ";
+                    mysqli_query($conn, "INSERT INTO materias (materia, descricao, usuarios_id_usuarios)" .
+                                " VALUES ('". $materia . "', '" . $descricao . "', '" . $usuarios_id_usuarios . "') ");
+                    header('location:materias.php');
+                    exit();
+                  } elseif (isset($_POST['Alterar'])) {
+                    mysqli_query($conn, "update materias set materia  = '" .  $materia . "'," .
+                                "                    descricao  = '" .  $descricao . "'," .
+                                "                    usuarios_id_usuarios  = '" .  $usuarios_id_usuarios . "' " .
+                                " where id_materias = '". $id_materias . "'");
+                    header('location:materias.php');
+                    exit();
+                  } elseif (isset($_POST['Excluir'])) {
+                    mysqli_query($conn, "delete from materias where id_materias = '". $id_materias . "'");
+                    header('location:materias.php');
+                    exit();
+                  }
+                }
+              }
+              ?>
+
               <form method="post" accept-charset="utf-8">
                 <div class="row uniform 50%">
                   <div class="6u 12u$(xsmall)">
@@ -106,40 +149,13 @@ require "portal/menu.php";
                     </ul>
                   </div>
                 </div>
+                <input type="hidden" name="id_materias" id="id_materias" value="<?php echo $id_materias; ?>" />
               </form>
             </section>
         </div>
       </section>
 
-<?php
-// Só entra aqui se for um postback
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['Voltar'])) {
-      header('location:usuarios.php');
-    }
 
-  $materia = isset($_POST["materia"]) ? addslashes(trim($_POST["materia"])) : FALSE;
-  $descricao = isset($_POST["descricao"]) ? addslashes(trim($_POST["descricao"])) : FALSE;
-  $usuarios_id_usuarios = isset($_POST["professor"]) ? trim($_POST["professor"]) : FALSE;
-
-
-  if (isset($_POST['Incluir'])) {
-    //echo "INSERT INTO materias (materia, descricao, usuarios_id_usuarios)" .
-    //            " VALUES ('". $materia . "', '" . $descricao . "', '" . $usuarios_id_usuarios . "') ";
-    mysqli_query($conn, "INSERT INTO materias (materia, descricao, usuarios_id_usuarios)" .
-                " VALUES ('". $materia . "', '" . $descricao . "', '" . $usuarios_id_usuarios . "') ");
-  } elseif (isset($_POST['Alterar'])) {
-    mysqli_query($conn, "update materias set materia  = '" .  $materia . "'," .
-                "                    descricao  = '" .  $descricao . "'," .
-                "                    usuarios_id_usuarios  = '" .  $usuarios_id_usuarios . "' " .
-                " where materia = '". $materia . "'");
-  } elseif (isset($_POST['Excluir'])) {
-    mysqli_query($conn, "delete from materias where materia = '". $materia . "'");
-  }
-
-  header('location:materias.php');
-}
-?>
 
 
 

@@ -31,7 +31,7 @@
 
     <?php
     if (!empty($_GET)) {
-        $SQL = "SELECT a.materia , (select max(nome) from usuarios where id_usuarios = a.usuarios_id_usuarios) as professor ,
+        $SQL = "SELECT concat(a.materia,' - ',a.descricao) as materia , (select max(nome) from usuarios where id_usuarios = a.usuarios_id_usuarios) as professor ,
             u.nome as aluno, m.nota, m.presencas, m.faltas, m.ind_ativo, m.ind_revisao, m.ind_revisado,
             m.ind_aprovacao, m.ind_reprovacao, m.id_matriculas  FROM matriculas m
             inner join usuarios u on m.usuarios_id_usuarios = u.id_usuarios

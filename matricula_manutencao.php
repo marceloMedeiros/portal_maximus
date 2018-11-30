@@ -31,7 +31,8 @@ require "portal/menu.php";
 
   <?php
   if (!empty($_GET)) {
-    $SQL = "SELECT m.id_matriculas, m.materias_id_materias, m.usuarios_id_usuarios, a.materia, t.turno,
+    $SQL = "SELECT m.id_matriculas, m.materias_id_materias, m.usuarios_id_usuarios, m.turnos_id_turnos,
+            a.materia, t.turno,
             (select max(nome) from usuarios where id_usuarios = a.usuarios_id_usuarios) as professor ,
             u.nome as aluno FROM matriculas m
             inner join usuarios u on m.usuarios_id_usuarios = u.id_usuarios
@@ -44,8 +45,8 @@ require "portal/menu.php";
     if ($total) {
       $dados = @mysqli_fetch_array($result_id);
 
-      $materia = $dados["materia"];
-      $turno =  $dados["turno"];
+      $materia = $dados["materias_id_materias"];
+      $turno =  $dados["turnos_id_turnos"];
       $aluno = $dados["usuarios_id_usuarios"];
       $id_matriculas = $dados["id_matriculas"];
     } else {
@@ -54,6 +55,7 @@ require "portal/menu.php";
       $aluno = "";
       $id_matriculas = "";
       header('location:matricula_manutencao.php');
+      exit();
     }
   } else {
     $materia = "";
@@ -65,6 +67,54 @@ require "portal/menu.php";
           <!-- Form -->
             <section>
               <h3>Associar nova disciplina</h3>
+
+              <?php
+              // Só entra aqui se for um postback
+              if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                  if (isset($_POST['Voltar'])) {
+                    header('location:matricula.php');
+                  }
+
+                $id_matriculas = isset($_POST["id_matriculas"]) ? $_POST["id_matriculas"] : FALSE;
+                $materia = isset($_POST["materia"]) ? trim($_POST["materia"]) : FALSE;
+                $aluno = isset($_POST["aluno"]) ? trim($_POST["aluno"]) : FALSE;
+                $turno = isset($_POST["turno"]) ? trim($_POST["turno"]) : FALSE;
+
+                if ($materia == "" || $aluno == "" || $turno == ""){
+                  echo "<div style=\"text-align:center; color:red;\">É necessário informar todos os campos!</div><br/>";
+                } else {
+                  if (isset($_POST['Incluir'])) {
+                    // primeiro testa se não existe um registro já com essa chave
+                    $SQL = " select id_matriculas from matriculas
+                             where materias_id_materias = " . $materia .
+                            "  and usuarios_id_usuarios = " . $aluno .
+                            "  and turnos_id_turnos = " . $turno;
+                    $result_id = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
+                    $total = @mysqli_num_rows($result_id);
+                    // Caso o usuário tenha digitado um login válido o número de linhas será 1..
+                    if ($total > 0) {
+                        echo "<div style=\"text-align:center; color:red;\">Já existe outro registro com esses dados!</div><br/>";
+                    } else {
+                      $SQL = "INSERT INTO matriculas (materias_id_materias, usuarios_id_usuarios, turnos_id_turnos) VALUES ('"
+                             . $materia . "', '" . $aluno . "', '" . $turno. "')";
+                      mysqli_query($conn, $SQL);
+                      header('location:matricula.php');
+                      exit();
+                    }
+                  } elseif (isset($_POST['Alterar'])) {
+
+                  } elseif (isset($_POST['Excluir'])) {
+                    $SQL =  "delete from matriculas where id_matriculas = '". $id_matriculas . "'";
+                    mysqli_query($conn, $SQL);
+                    header('location:matricula.php');
+                    exit();
+                  }
+
+
+                }
+              }
+              ?>
+
               <form method="post" accept-charset="utf-8">
                 <div class="row uniform 50%">
                   <div class="12u$">
@@ -93,7 +143,7 @@ require "portal/menu.php";
                         $result = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
                         while ($row = mysqli_fetch_array($result)) {
                           echo "<option value=\"" . $row["id_materias"] . "\"" .
-                               (!empty($materia) ? ($materia == $row["materia"] ? " selected=\"selected\"" : "") : "") .
+                               (!empty($materia) ? ($materia == $row["id_materias"] ? " selected=\"selected\"" : "") : "") .
                                "\">" . $row["materia"] . "</option>";
                         }
                         ?>
@@ -109,7 +159,7 @@ require "portal/menu.php";
                         $result = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
                         while ($row = mysqli_fetch_array($result)) {
                           echo "<option value=\"" . $row["id_turnos"] . "\"" .
-                               (!empty($turno) ? ($turno == $row["turno"] ? " selected=\"selected\"" : "") : "") .
+                               (!empty($turno) ? ($turno == $row["id_turnos"] ? " selected=\"selected\"" : "") : "") .
                                "\">" . $row["turno"] . "</option>";
                         }
                         ?>
@@ -135,37 +185,13 @@ require "portal/menu.php";
                     </ul>
                   </div>
                 </div>
+                <input type="hidden" name="id_matriculas" id="id_matriculas" value="<?php echo $id_matriculas; ?>" />
               </form>
             </section>
         </div>
       </section>
 
-<?php
-// Só entra aqui se for um postback
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['Voltar'])) {
-      header('location:matricula.php');
-    }
 
-  $materia = isset($_POST["materia"]) ? trim($_POST["materia"]) : FALSE;
-  $aluno = isset($_POST["aluno"]) ? trim($_POST["aluno"]) : FALSE;
-  $turno = isset($_POST["turno"]) ? trim($_POST["turno"]) : FALSE;
-
-  if (isset($_POST['Incluir'])) {
-    $SQL = "INSERT INTO matriculas (materias_id_materias, usuarios_id_usuarios, turnos_id_turnos) VALUES ('"
-           . $materia . "', '" . $aluno . "', '" . $turno. "')";
-
-    mysqli_query($conn, $SQL);
-  } elseif (isset($_POST['Alterar'])) {
-
-  } elseif (isset($_POST['Excluir'])) {
-    $SQL =  "delete from matriculas where materias_id_materias = '". $materia . "' and usuarios_id_usuarios = '". $aluno . "'";
-    mysqli_query($conn, $SQL);
-  }
-
-  header('location:matricula.php');
-}
-?>
 
 
 
