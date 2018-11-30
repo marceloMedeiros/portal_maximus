@@ -32,7 +32,7 @@ require "portal/menu.php";
 
   <?php
   if (!empty($_GET)) {
-    $SQL = "SELECT id_usuarios , login , senha , nome , ra , ind_Aluno , ind_Professor , ind_Secretaria FROM usuarios WHERE login = '" . $_GET['l'] . "'";
+    $SQL = "SELECT id_usuarios , login , senha , nome , ra , ind_Aluno , ind_Professor , ind_Secretaria FROM usuarios WHERE id_usuarios = '" . $_GET['l'] . "'";
     $result_id = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
     $total = @mysqli_num_rows($result_id);
     // Caso o usuário tenha digitado um login válido o número de linhas será 1..
@@ -87,6 +87,8 @@ require "portal/menu.php";
               if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (isset($_POST['Voltar'])) {
                   header('location:usuarios.php');
+                } elseif (isset($_POST['Senha'])) {
+                  header('location:senha.php?l=' . $_POST["id_usuarios"]);
                 }
 
                 $id_usuarios = isset($_POST["id_usuarios"]) ? addslashes(trim($_POST["id_usuarios"])) : FALSE;
@@ -177,6 +179,7 @@ require "portal/menu.php";
                         if ($total) {
                           echo "<li><input type=\"submit\" value=\"Alterar\" name=\"Alterar\" class=\"special\" /></li>";
                           echo "<li><input type=\"submit\" value=\"Excluir\" name=\"Excluir\" class=\"special\" /></li>";
+                          echo "<li><input type=\"submit\" value=\"Senha\" name=\"Senha\" class=\"special\" /></li>";
                         } else {
                           echo "<li><input type=\"submit\" value=\"Incluir\" name=\"Incluir\" class=\"special\" /></li>";
                         }

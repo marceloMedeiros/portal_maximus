@@ -41,13 +41,13 @@ require "portal/menu.php";
                   </thead>
                   <tbody>
 <?php
-$SQL = "SELECT login , nome , ra , ind_Aluno , ind_Professor , ind_Secretaria FROM usuarios
+$SQL = "SELECT id_usuarios, login , nome , ra , ind_Aluno , ind_Professor , ind_Secretaria FROM usuarios
         order by nome ";
 $result = @mysqli_query($conn, $SQL) or die("Erro no banco de dados!");
 while ($row = mysqli_fetch_array($result)) {
   echo "<tr>";
   echo "<td>" . $row['nome'] . "</td>";
-  echo "<td>" . "<a href=\"usuarios_manutencao.php?l=" . $row['login'] . "\">" .
+  echo "<td>" . "<a href=\"usuarios_manutencao.php?l=" . $row['id_usuarios'] . "\">" .
   $row['login'] . "</a></td>";
   if ($row['ind_Aluno'] === 'S'){
     echo "<td>Aluno</td>";
